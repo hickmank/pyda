@@ -1,0 +1,89 @@
+###############################################################################
+###############################################################################
+#   Copyright 2014 Kyle S. Hickmann and
+#                  The Administrators of the Tulane Educational Fund
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+###############################################################################
+###############################################################################
+
+pyda separates ensemble generation and filtering/analysis into
+separate class objects. These are then used together in an
+assimilation class object. This allows the user to code the ensemble
+generation, assimilation, and filtering/analysis steps
+separately. Allowing concentration on the element of the assimilation
+process they are interested in refining. This also allows a user to
+code up their particular ensemble generation method and use the
+assimilation and filtering classes we have provided to perform the
+assimilation. If you have written a time-dependent simulation in
+python then pyda will handle the data assimilation problem. There is
+minimal support for visualization and assimilation evaluation as well.
+
+This package includes:
+     - Classes to generate an ensemble of runs from a simulation
+     - Classes to perform various flavors of Ensemble Kalman filtering
+     - Classes to perform various particle filtering and sequential 
+       monte carlo filtering 
+     - Classes to control interaction between ensemble generation, data, 
+       and analysis for data assimilation
+     - Multiple examples to experiment with data assimilation
+     - Functions to visualize data assimilation process occurring in the exmples
+     - Functions to evaluate effectiveness of data assimilation process
+
+#############################################
+#############################################
+Non-Standard Packages Used:
+	 Numpy and Matplotlib
+#############################################
+
+QUICK START:
+
+      Just run
+      >> python setup.py install
+
+Directory Structure:
+
+pyda1.0/
+	LICENSE
+	README
+	setup.py
+	ez_setup.py
+	examples/
+		SIR_enkf1.py
+		data/
+		figures/
+
+	pyda/
+		__init__.py
+		analysis_generator/
+			__init__.py
+			analysis_generator_class.py
+			kf/
+				__init__.py
+				enkf1.py
+			pf/
+				__init__.py
+		assimilation/
+			__init__.py
+			assimilation_current.py
+			data_assimilation_class.py
+		ensemble_generator/
+			__init__.py
+			ensemble_generator_class.py
+			SIRensemble.py
+		utilities/
+			__init__.py
+			epiODElib.py
+		
+Description:
+------------
