@@ -16,23 +16,18 @@
 #   limitations under the License.
 ###############################################################################
 ###############################################################################
-# Module to visualize one step of a data assimilation process. Uses
-# quantile cone visualization as opposed to trajectory visualization. 
-
-# NOTE: This vsualization assumes that the data being assimilated is a scalar.
-
-# This will provide a decent starting point for designing application
-# specific visualizations for data assimilation with ODE systems.
-
-# Use:
-# AssimilationVis(SimDim,DataFileName,EnsembleFileName,AnalysisFileName)
+# Module of functions for different visualizations of a data
+# assimilation process. 
 
 import numpy as np 
-import numpy.random as rn
-import math 
 import matplotlib.pyplot as plt 
 
-def AssimilationVis(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
+# NOTE: This visualization assumes that the data being assimilated is
+# a scalar.  Uses percentile (100.0*Quantile) cone visualization as
+# opposed to trajectory visualization. This will provide a decent
+# starting point for designing application specific visualizations for
+# data assimilation with ODE systems.
+def ode_DA_vis1(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
     # First load respective files into NumPy arrays and set ensemble size
     DataArray = np.loadtxt(DataFileName,delimiter='\t')
     Ndata_pts = DataArray.shape[0]
@@ -43,8 +38,8 @@ def AssimilationVis(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
     # Pull out data timeseries
     DataSeries = DataArray[:,1]
 
-    # Define quantiles
-    QntLev = [0.05, 0.25, 0.5, 0.75, 0.95]
+    # Define percentiles
+    pLev = [5.0, 25.0, 50.0, 75.0, 95.0]
 
     # Import analysis ensemble data
     AnalysisArray = np.loadtxt(AnalysisFileName)
@@ -52,7 +47,10 @@ def AssimilationVis(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
     # Grab analysis time
     analysistime = AnalysisArray[:,0]
 
-    # Pull array of last simulation dimension of runs
+    # Pull array of last simulation dimension of runs 
+    # NOTE: This should be fixed to either specify which simulation
+    # dimension to graph or cycle through each simulation dimension
+    # and create many subplots/plots.
     AnalysisSeries = AnalysisArray[:,SimDim::SimDim]
 
     # Import ensemble data
@@ -62,54 +60,122 @@ def AssimilationVis(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
     ensembletime = EnsembleArray[:,0]
 
     # Pull array of last simulation dimension of runs
+    # NOTE: This should be fixed to either specify which simulation
+    # dimension to graph or cycle through each simulation dimension
+    # and create many subplots/plots.
     EnsembleSeries = EnsembleArray[:,SimDim::SimDim]
 
-    # Calculate ensemble quantile curves
-    EnQnt = mst.mquantiles(EnsembleSeries,prob=QntLev,axis=1)
+    # Calculate ensemble percentile curves
+    EnPcnt = np.percentile(EnsembleSeries,pLev,axis=1)
 
     # Calculate analysis quantile curves
-    AnQnt = mst.mquantiles(AnalysisSeries,prob=QntLev,axis=1)
+    AnPcnt = np.percentile(AnalysisSeries,pLev,axis=1)
 
     # Only plot one group of analysis ensemble runs 
     plt.figure(1)
 
     # Plot 90% cone
     plt.subplot(1,2,1)
-    plt.fill_between(ensembletime,EnQnt[:,0],AnQnt[:,4],
+    plt.fill_between(ensembletime,EnPcnt[0],EnPcnt[4],
                      color=(158./255.,202./255.,225./255.),alpha=0.5)
     # Plot 50% cone
     plt.subplot(1,2,1)
-    plt.fill_between(ensembletime,EnQnt[:,1],AnQnt[:,3],
+    plt.fill_between(ensembletime,EnPcnt[1],EnPcnt[3],
                      color=(49./255.,130./255.,189./255.),alpha=0.5)
     # Plot median forecast
     plt.subplot(1,2,1)
-    plt.plot(ensembletime,EnQnt[:,2],'r-',linewidth=2, label='Median Forecast')
+    plt.plot(ensembletime,EnPcnt[2],'r-',linewidth=2, label='Median Forecast')
     # Plot data over ensemble plot
     plt.subplot(1,2,1)
     plt.plot(datatime, DataSeries, 'yD', label='Data')
+    # Label the plot
+    plt.title('ODE Data Assimilation (Ensemble)')
+    plt.ylabel('Simulation')
+    plt.xlabel('Time')
+    plt.xlim([0.0,datatime[-1]])
+    plt.legend()
 
     # Plot 90% cone
     plt.subplot(1,2,2)
-    plt.fill_between(analysistime,AnQnt[:,0],AnQnt[:,4],
+    plt.fill_between(analysistime,AnPcnt[0],AnPcnt[4],
                      color=(158./255.,202./255.,225./255.),alpha=0.5)
     # Plot 50% cone
     plt.subplot(1,2,2)
-    plt.fill_between(analysistime,AnQnt[:,1],AnQnt[:,3],
+    plt.fill_between(analysistime,AnPcnt[1],AnPcnt[3],
                      color=(49./255.,130./255.,189./255.),alpha=0.5)
     # Plot median forecast
     plt.subplot(1,2,2)
-    plt.plot(analysistime,AnQnt[:,2],'r-',linewidth=2, label='Median Forecast')
+    plt.plot(analysistime,AnPcnt[2],'r-',linewidth=2, label='Median Forecast')
     # Plot data over ensemble plot
     plt.subplot(1,2,2)
     plt.plot(datatime, DataSeries, 'yD', label='Data')
-
     # Label the plot
-    plt.title('U.S. Forecast, 2013-2014 ILI up to Week 3 (no Wiki-data)')
-    plt.ylabel('% Visits for ILI')
-    plt.xlabel('Epidemic Week')
-    plt.xlim([analysistime[0],analysistime[-1]])
-    plt.ylim([0,10]) # If you want to fix y-axis
-    plt.xticks(Time[(14-1)::14], map(int,epiWk))
+    plt.title('ODE Data Assimilation (Analysis)')
+    plt.ylabel('Simulation')
+    plt.xlabel('Time')
+    plt.xlim([0.0,datatime[-1]])
     plt.legend()
-    plt.show()
 
+    # Display image
+    plt.show()
+######################################################################
+######################################################################
+
+# NOTE: This visualization assumes that the data being assimilated is
+# a scalar.  Uses trajectory visualization. This will provide a decent
+# starting point for designing application specific visualizations for
+# data assimilation with ODE systems.
+def ode_DA_vis2(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
+    # First load respective files into NumPy arrays and set ensemble size
+    DataArray = np.loadtxt(DataFileName,delimiter='\t')
+    Ndata_pts = DataArray.shape[0]
+
+    # Pull out data time
+    datatime = DataArray[:,0]
+
+    # Pull out data timeseries
+    DataSeries = DataArray[:,1]
+
+    # Import analysis ensemble data
+    AnalysisArray = np.loadtxt(AnalysisFileName)
+
+    # Grab analysis time
+    analysistime = AnalysisArray[:,0]
+
+    # Pull array of last simulation dimension of runs 
+    # NOTE: This should be fixed to either specify which simulation
+    # dimension to graph or cycle through each simulation dimension
+    # and create many subplots/plots.
+    AnalysisSeries = AnalysisArray[:,SimDim::SimDim]
+
+    # Import ensemble data
+    EnsembleArray = np.loadtxt(EnsembleFileName)
+
+    # Grab analysis time
+    ensembletime = EnsembleArray[:,0]
+
+    # Pull array of last simulation dimension of runs
+    # NOTE: This should be fixed to either specify which simulation
+    # dimension to graph or cycle through each simulation dimension
+    # and create many subplots/plots.
+    EnsembleSeries = EnsembleArray[:,SimDim::SimDim]
+
+    EnSize = EnsembleSeries.shape[1]
+
+    plt.figure(1)
+    for i in range(EnSize):
+        # Light Blue: color=(36./255.,164./255.,239./255.)
+        plt.plot(ensembletime,EnsembleSeries[:,i],color=(158./255.,202./255.,225./255.),linewidth=.15)
+        plt.plot(analysistime,AnalysisSeries[:,i],color=(49./255.,130./255.,189./255.),linewidth=.15)
+    
+    plt.plot(datatime, DataSeries, 'yD', label='Data')
+    # Label the plot
+    plt.title('ODE Data Assimilation')
+    plt.ylabel('Simulation')
+    plt.xlabel('Time')
+    plt.xlim([0.0,datatime[-1]])
+
+    # Display image
+    plt.show()
+######################################################################
+######################################################################
