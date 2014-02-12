@@ -24,16 +24,15 @@ import numpy.random as rn
 # Import Data Assimilation class
 from .data_assimilation_class import DataAssimilationClass
 
-class DA_current(DataAssimilationClass):
+class DA_current2horizon(DataAssimilationClass):
     # This implements a data assimilation scheme in which only the
     # most recent data point is used to adjust the ensemble and
-    # parametrization. The ensemble is then only propagated from one
-    # data point to the next at each assimilation step. Propagation to
-    # the horizon then occurs at the final step. Also, the data array
-    # passed to the analysis step is perturbed by samples from normal
-    # distribution controlled by the data covariance matrix. For
-    # deterministic analysis schemes and some particle filters this
-    # will not be necessary.
+    # parametrization. The ensemble is then propagated from the most
+    # recent data point to the horizon at each assimilation
+    # step. Also, the data array passed to the analysis step is
+    # perturbed by samples from normal distribution controlled by the
+    # data covariance matrix. For deterministic analysis schemes and
+    # some particle filters this will not be necessary.
 
     # NOTE: This just takes care of how data is used in the
     # assimilation. For a specific data assimilation problem the
@@ -113,8 +112,7 @@ class DA_current(DataAssimilationClass):
     # analysis, and reading/writing interact.
     # Ntimestep = number of timesteps per data point in ensemble generation
     # InitialTime = time simulation starts before first data point
-    # Horizon_timesteps = number of timesteps from last data point to horizon
-    def DArun(self,Ntimestep,InitialTime,Horizon_timesteps):
+    def DArun(self,Ntimestep,InitialTime):
         # Data Assimilation process consists of 3 steps: 
         # 1.) Ensemble generation 
         # 2.) Analysis generation 
@@ -133,19 +131,18 @@ class DA_current(DataAssimilationClass):
         self.DataCovInit()
 
         for i in range(self.Data.shape[0]):
-            # 1.) Ensemble Generation
+            # 1.) Ensemble Generation to next data point
             stop_time = self.DataTime[i]
-            [Ensemble,EnsTime] = self._ensemble.fwd_propagate(self.Param,start_time,stop_time,Ntimestep)        
+            [Ensemble,EnsTime] = self._ensemble.fwd_propagate(self.Param,start_time,stop_time,Ntimestep)      
             Observation = self.Model2DataMap(Ensemble)
 
-            # NOTE: To see how predictions to Horizon change during
-            # assimilation you would need to introduce an ensemble
-            # propogation to the Horizon here but make sure it is not
-            # passed to the analysis step.
+            # Generate ensemble forecast to horizon
+            Ndatapt_remaining = self.Data[i:,:].shape[0] + 1.0
+            [Forecast,CastTime] = self._ensemble.fwd_propagate(self.Param,start_time,self.Horizon,Ntimestep*Ndatapt_remaining)
 
             # Write ensemble array
             EnsFileName = "".join(('./ensemble.',str(i),'.dat'))
-            self.ensemble_write(Ensemble,EnsTime,EnsFileName)            
+            self.ensemble_write(Forecast,CastTime,EnsFileName)            
 
             # Increment start time
             start_time = stop_time
@@ -171,15 +168,13 @@ class DA_current(DataAssimilationClass):
             AnalysisParam[:,:self.SimDim] = Analysis[-self.SimDim:,:].transpose()
             self.Param = AnalysisParam
 
+            # Generate analysis forecast to horizon starting at new data point
+            Ndatapt_remaining = self.Data[(i+1):,:].shape[0] + 1.0
+            [Forecast,CastTime] = self._ensemble.fwd_propagate(self.Param,start_time,self.Horizon,Ntimestep*Ndatapt_remaining)
+
             # Write analysis to files
             AnsFileName = "".join(('./analysis.',str(i),'.dat'))
             ParamFileName = "".join(('./param.',str(i+1),'.dat'))
             self.param_write(ParamFileName)
-            self.ensemble_write(Analysis,EnsTime,AnsFileName)            
-
-        # Forecast to horizon
-        [Forecast,ForecastTime] = self._ensemble.fwd_propagate(self.Param,start_time,self.Horizon,Horizon_timesteps)
-        # Write forecast array
-        ForecastFileName = "".join(('./forecast.dat'))
-        self.ensemble_write(Forecast,ForecastTime,ForecastFileName)            
+            self.ensemble_write(Forecast,CastTime,AnsFileName)            
 

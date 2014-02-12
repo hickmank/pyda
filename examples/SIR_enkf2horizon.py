@@ -21,7 +21,7 @@ import inspect
 import numpy as np
 
 # Import Data Assimilation class
-from pyda.assimilation.assimilation_current import DA_current
+from pyda.assimilation.assimilation_current2horizon import DA_current2horizon
 
 # Import Ensemble Generation class
 from pyda.ensemble_generator.SIRensemble import SIRensemble
@@ -29,7 +29,7 @@ from pyda.ensemble_generator.SIRensemble import SIRensemble
 # Import analysis class
 from pyda.analysis_generator.kf.enkf1 import ENKF1
 
-class SIR_DA(DA_current):
+class SIR_DA2horizon(DA_current2horizon):
     # Defines the array of observations corresponding to a generated ensemble.
     # Observation = (measurement size)x(Ensemble Size) numpy array
     def Model2DataMap(self,Ensemble):
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     DataFileName = './data/SIRdata.dat'
     
     # Specify data assimilation method
-    DA_method = SIR_DA(DataFileName,data_noise,Horizon,EnSize,SimDim,ensemble_method,analysis_method)
+    DA_method = SIR_DA2horizon(DataFileName,data_noise,Horizon,EnSize,SimDim,ensemble_method,analysis_method)
 
     # Read/Write initialization/parametrization file to correct place.
     DA_method.param_read('./data/SIRsampleparams.dat')
@@ -67,7 +67,6 @@ if __name__ == '__main__':
     # Specify assimilation routine parameters
     InitialTime = 0.0
     Ntimestep = 20.0
-    Horizon_timesteps = 20.0
 
     # Run data assimilation routine
-    DA_method.DArun(Ntimestep,InitialTime,Horizon_timesteps)
+    DA_method.DArun(Ntimestep,InitialTime)
