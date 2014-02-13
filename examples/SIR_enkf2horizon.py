@@ -40,8 +40,11 @@ class SIR_DA2horizon(DA_current2horizon):
        
     # Attribute to define the data-error covariance matrix.
     def DataCovInit(self):
-        # In the SIR example the data noise is assumed to be a scalar that is constant at each observation
-        self.DataCov = np.power(self.data_noise,2.0)
+        # In the SIR example the data noise is assumed to be a scalar
+        # that is constant at each observation. We use an array so
+        # that the 'shape' of the data covariance is understood by
+        # numpy in a linear algebra sense.
+        self.DataCov = np.array([[np.power(self.data_noise,2.0)]])
 
 if __name__ == '__main__':
     # Specify ensemble generation method

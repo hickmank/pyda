@@ -27,7 +27,7 @@ from pyda.assimilation.assimilation_current2horizon import DA_current2horizon
 from pyda.ensemble_generator.SIRensemble import SIRensemble
 
 # Import analysis class
-from pyda.analysis_generator.kf.enkf1_inflation import ENKF1_inflation
+from pyda.analysis_generator.pf.pf_naive import PF_NAIVE
 
 class SIR_DA2horizon(DA_current2horizon):
     # Defines the array of observations corresponding to a generated ensemble.
@@ -42,8 +42,8 @@ class SIR_DA2horizon(DA_current2horizon):
     def DataCovInit(self):
         # In the SIR example the data noise is assumed to be a scalar
         # that is constant at each observation. We use an array so
-        # that the 'shape' of the data covariance is understood by
-        # numpy in a linear algebra sense.
+        # that the 'shape' of the scalar is understood by numpy in a
+        # linear algebra sense.
         self.DataCov = np.array([[np.power(self.data_noise,2.0)]])
 
 if __name__ == '__main__':
@@ -51,8 +51,7 @@ if __name__ == '__main__':
     ensemble_method = SIRensemble()
 
     # Specify analysis method
-    rho = 1.5 # Inflation parameter
-    analysis_method = ENKF1_inflation(rho)
+    analysis_method = PF_NAIVE()
 
     # Input parameters to specify setup of problem
     data_noise = 0.0025
