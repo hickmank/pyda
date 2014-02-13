@@ -35,7 +35,7 @@ setup(
 	author_email = 'khickma@tulane.edu',
 	maintainer = 'Kyle Hickmann',
 	maintainer_email = 'khickma@tulane.edu',
-	url = 'https://github.com/hickmank/pyda',
+	url = 'https://hickmank.github.io/pyda',
         long_description = read('README'),
 	license = 'Apache 2.0',
 	classifiers = [

@@ -19,26 +19,28 @@
 
 import inspect
 import numpy as np
+import math
 
 # Import AnalysisGeneratorClass
 from ..analysis_generator_class import AnalysisGeneratorClass
 
-class ENKF1(AnalysisGeneratorClass):
-    # This is an implementation of a stochastic ensemble Kalman
-    # filter. Each ensemble member is updated separately and the full
-    # ensemble covariance is never formed.
-    def __init__(self):
+class ENKF1_inflation(AnalysisGeneratorClass):
+    # This is an implementation of a stochastic ensemble Kalman filter
+    # with covariance inflation. Each ensemble member is updated
+    # separately and the full ensemble covariance is never formed.
+    def __init__(self,rho):
         # INPUT: {numpy arrays}
         #      <Data Array> = (measurement size)x(ensemble size)
         #      <Data Covariance> = (measurement size)x(measurement size)
         #      <Ensemble Array> = (simulation size)x(ensemble size)
         #      <Parameter Array> = (parameter size)x(ensemble size)
         #      <Ensemble Observation Array> = (measurement size)x(ensemble size)
-        #
+        #      <rho> = (scalar) covariance inflation parameter. Usually rho >= 1.
         # RETURN: {numpy arrays}
         #      <Analysis Array> = (simulation size)x(ensemble size)
         #      <Analysis Parameter Array> = (ensemble size)x(parameter size)
-        self.Name = 'Stochastic Ensemble Kalman Filter'
+        self.Name = 'Stochastic Ensemble Kalman Filter with Covariance Inflation'
+        self.rho = rho
 
     # Returns the analysis ensemble array and the analysis parameter array.
     # Analysis = (Ntimestep*SimulationDimension)x(EnSize) numpy array
@@ -53,8 +55,17 @@ class ENKF1(AnalysisGeneratorClass):
         # A is (SimSize+ParSize)x(EnSize)
         A = np.vstack([Ensemble, Param.transpose()])
 
-        # Calculate mean
+        # Calculate ensemble mean
         Amean = (1./float(EnSize))*np.tile(A.sum(1), (EnSize,1)).transpose()
+
+        # Calculate ensemble observation mean
+        MeasAvg = (1./float(EnSize))*np.tile(Observation.reshape(MeaSize,EnSize).sum(1), (EnSize,1)).transpose()
+        
+        # Inflate the ensemble 
+        A = math.sqrt(self.rho)*(A - Amean) + Amean
+
+        # Inflate the ensemble observations
+        Observation = math.sqrt(self.rho)*(Observation - MeasAvg) + MeasAvg
 
         # Calculate ensemble perturbation from mean
         # Apert should be (SimSize+ParSize)x(EnSize)
@@ -66,7 +77,6 @@ class ENKF1(AnalysisGeneratorClass):
 
         # Ensemble measurement perturbation from ensemble measurement mean.
         # S is (MeasSize)x(EnSize)
-        MeasAvg = (1./float(EnSize))*np.tile(Observation.reshape(MeaSize,EnSize).sum(1), (EnSize,1)).transpose()
         S = Observation - MeasAvg
 
         # Set up measurement covariance matrix

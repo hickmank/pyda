@@ -165,8 +165,8 @@ def ode_DA_vis2(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
     plt.figure(1)
     for i in range(EnSize):
         # Light Blue: color=(36./255.,164./255.,239./255.)
-        plt.plot(ensembletime,EnsembleSeries[:,i],color=(158./255.,202./255.,225./255.),linewidth=.15)
-        plt.plot(analysistime,AnalysisSeries[:,i],color=(49./255.,130./255.,189./255.),linewidth=.15)
+        plt.plot(ensembletime,EnsembleSeries[:,i],color=(161./255.,218./255.,180./255.),linewidth=.2)
+        plt.plot(analysistime,AnalysisSeries[:,i],color=(37./255.,52./255.,148./255.),linewidth=.2)
     
     plt.plot(datatime, DataSeries, 'yD', label='Data')
     # Label the plot
