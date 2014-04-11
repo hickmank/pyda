@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 # data assimilation with ODE systems.
 def ode_DA_vis1(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
     # First load respective files into NumPy arrays and set ensemble size
-    DataArray = np.loadtxt(DataFileName,delimiter='\t')
+    DataArray = np.loadtxt(DataFileName,delimiter='\t',skiprows=1)
     Ndata_pts = DataArray.shape[0]
 
     # Pull out data time
@@ -127,7 +127,7 @@ def ode_DA_vis1(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
 # data assimilation with ODE systems.
 def ode_DA_vis2(SimDim,DataFileName,EnsembleFileName,AnalysisFileName):
     # First load respective files into NumPy arrays and set ensemble size
-    DataArray = np.loadtxt(DataFileName,delimiter='\t')
+    DataArray = np.loadtxt(DataFileName,delimiter='\t',skiprows=1)
     Ndata_pts = DataArray.shape[0]
 
     # Pull out data time

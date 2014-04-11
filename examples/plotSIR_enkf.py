@@ -33,4 +33,4 @@ EnsembleFileName = "./ensemble.2.dat"
 AnalysisFileName = "./analysis.2.dat"
 
 # Call pyda.utilities function
-DA_vis.ode_DA_vis2(SimDim,DataFileName,EnsembleFileName,AnalysisFileName)
+DA_vis.ode_DA_vis1(SimDim,DataFileName,EnsembleFileName,AnalysisFileName)

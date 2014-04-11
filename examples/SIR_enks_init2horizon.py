@@ -21,7 +21,7 @@ import inspect
 import numpy as np
 
 # Import Data Assimilation class
-from pyda.assimilation.assimilation_current2horizon import DA_current2horizon
+from pyda.assimilation.assimilation_init2horizon_smoother import DA_Init2HorizonSmoother
 
 # Import Ensemble Generation class
 from pyda.ensemble_generator.SIRensemble import SIRensemble
@@ -29,7 +29,7 @@ from pyda.ensemble_generator.SIRensemble import SIRensemble
 # Import analysis class
 from pyda.analysis_generator.kf.enkf1 import ENKF1
 
-class SIR_DA2horizon(DA_current2horizon):
+class SIR_DA_SMOOTH_INIT2HORIZON(DA_Init2HorizonSmoother):
     # Defines the array of observations corresponding to a generated ensemble.
     # Observation = (measurement size)x(Ensemble Size) numpy array
     def Model2DataMap(self,Ensemble):
@@ -37,7 +37,7 @@ class SIR_DA2horizon(DA_current2horizon):
         # proportion at the last ensemble entry.
         Observation = Ensemble[-1]
         return Observation
-   
+       
     # Attribute to define the data-error covariance matrix.
     def DataCovInit(self):
         # In the SIR example the data noise is assumed to be a scalar
@@ -55,13 +55,14 @@ if __name__ == '__main__':
 
     # Input parameters to specify setup of problem
     data_noise = 0.0025
+    data_lag = 2
     Horizon = 200.0
     SimDim = 2
     EnSize = 100
     DataFileName = './data/SIRdata.dat'
     
     # Specify data assimilation method
-    DA_method = SIR_DA2horizon(DataFileName,data_noise,Horizon,EnSize,SimDim,ensemble_method,analysis_method)
+    DA_method = SIR_DA_SMOOTH_INIT2HORIZON(DataFileName,data_noise,data_lag,Horizon,EnSize,SimDim,ensemble_method,analysis_method)
 
     # Read/Write initialization/parametrization file to correct place.
     DA_method.param_read('./data/SIRsampleparams.dat')
@@ -70,6 +71,7 @@ if __name__ == '__main__':
     # Specify assimilation routine parameters
     InitialTime = 0.0
     Ntimestep = 20.0
+    HorizonIntervals = 10.0
 
     # Run data assimilation routine
-    DA_method.DArun(Ntimestep,InitialTime)
+    DA_method.DArun(Ntimestep,InitialTime,HorizonIntervals)
