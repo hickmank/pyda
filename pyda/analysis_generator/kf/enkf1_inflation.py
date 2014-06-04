@@ -28,7 +28,7 @@ class ENKF1_inflation(AnalysisGeneratorClass):
     # This is an implementation of a stochastic ensemble Kalman filter
     # with covariance inflation. Each ensemble member is updated
     # separately and the full ensemble covariance is never formed.
-    def __init__(self,rho):
+    def __init__(self,rho=1.0):
         # INPUT: {numpy arrays}
         #      <Data Array> = (measurement size)x(ensemble size)
         #      <Data Covariance> = (measurement size)x(measurement size)

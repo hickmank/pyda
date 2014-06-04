@@ -85,3 +85,14 @@ def GuassLikelihood(data, analysis_observations):
     GaussLikelihood = math.exp(-Arg)/Coef
 
     return GaussLikelihood
+
+# We return the Mahalonobis Distance between a set of observations
+# and the mean of an ensemble/analysis. The distance is scaled by the 
+# covariance of the ensemble. 
+# If the data is m and the ensemble mean is mu with covariance C then
+# the Mahalonobis distance is given by
+#     d(m,mu) = (m - mu)^T inv(C) (m - mu)
+def Mdist(data, Amean, ACov):
+    D = math.sqrt(np.dot((data - Amean),np.linalg.solve(ACov,(data - Amean))))
+    
+    return D
