@@ -1,30 +1,14 @@
-###############################################################################
-###############################################################################
-#   Copyright 2014 Kyle S. Hickmann and
-#                  The Administrators of the Tulane Educational Fund
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-###############################################################################
-###############################################################################
+"""Data Assimilation Effectiveness Quantification
 
-# Module of functions to evaluate the effectiveness of Data
-# Assimilation methods. Mainly the evaluation of effectiveness is done
-# by computing the KL-divergence between the analysis ensemble and the
-# background ensemble along with the data likelihood under the
-# analysis ensemble. This can be done explicitly for the Kalman Filter
-# schemes which assume Gaussianity. For the sequential Monte Carlo and
-# Particle Filter methods we use Kernel Density Approximation of the
-# distributions.
+Module of functions to evaluate the effectiveness of Data Assimilation
+methods. Mainly the evaluation of effectiveness is done by computing the
+KL-divergence between the analysis ensemble and the background ensemble along
+with the data likelihood under the analysis ensemble. This can be done
+explicitly for the Kalman Filter schemes which assume Gaussianity. For the
+sequential Monte Carlo and Particle Filter methods we use Kernel Density
+Approximation of the distributions.
+
+"""
 
 import numpy as np 
 import math
