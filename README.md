@@ -1,21 +1,5 @@
-###############################################################################
-###############################################################################
-#   Copyright 2014 Kyle S. Hickmann and
-#                  The Administrators of the Tulane Educational Fund
-#
-#   Licensed under the Apache License, Version 2.0 (the "License");
-#   you may not use this file except in compliance with the License.
-#   You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#   Unless required by applicable law or agreed to in writing, software
-#   distributed under the License is distributed on an "AS IS" BASIS,
-#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#   See the License for the specific language governing permissions and
-#   limitations under the License.
-###############################################################################
-###############################################################################
+pyda: Object Oriented Data Assimilation Framework for Python
+============================================================
 
 pyda separates ensemble generation and filtering/analysis into
 separate class objects. These are then used together in an
@@ -30,6 +14,7 @@ python then pyda will handle the data assimilation problem. There is
 minimal support for visualization and assimilation evaluation as well.
 
 This package includes:
+----------------------
      - Classes to generate an ensemble of runs from a simulation
      - Classes to perform various flavors of Ensemble Kalman filtering
      - Classes to perform various particle filtering and sequential 
@@ -40,19 +25,21 @@ This package includes:
      - Functions to visualize data assimilation process occurring in the exmples
      - Functions to evaluate effectiveness of data assimilation process
 
-#############################################
-#############################################
-Non-Standard Packages Used:
-	 Numpy and Matplotlib
-#############################################
+Dependencies:
+-------------
+	 - Numpy
+	 - Matplotlib
 
-QUICK START:
+Quick Start:
+------------
 
-      Just run
-      >> python setup.py install
+Run
+
+        python setup.py install
       
-      Then, from the examples directory, try
-      >> python SIR_enkf1.py
+From the examples directory, try
+
+        python SIR_enkf1.py
 
 Directory Structure:
 
