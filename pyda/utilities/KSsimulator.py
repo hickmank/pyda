@@ -1,22 +1,26 @@
-# Function definitions to simulate 1D Kuramoto-Sivashinsky solutions 
-# using Exponential Time-differencing with Fourth order
-# Runge-Kutta. These functions can then be used in a data 
-# assimilation routine.
+"""Functions to Simulate Kuramoto-Sivashinsky Solution
 
-# u_t = -u*u_x - u_xx - u_xxxx, periodic BCs on [-PI*L, PI*L]
-# computation is based on v = fft(u), so linear term is diagonal
-# compare p27.m in Trefethen, "Spectral Methods in MATLAB", SIAM 2000
-# AK Kassam and LN Trefethen, July 2002
+Function definitions to simulate 1D Kuramoto-Sivashinsky solutions 
+using Exponential Time-differencing with Fourth order
+Runge-Kutta. These functions can then be used in a data 
+assimilation routine.
 
-# To simplify the Fourier transform we use 
-# u*u_x = 0.5*(d/dx)(u^2)
+u_t = -u*u_x - u_xx - u_xxxx, periodic BCs on [-PI*L, PI*L]
+computation is based on v = fft(u), so linear term is diagonal
+compare p27.m in Trefethen, "Spectral Methods in MATLAB", SIAM 2000
+AK Kassam and LN Trefethen, July 2002
 
-# Fourier form of equation with 
-#      u(x,t) = \sum_k u_k(t) exp(ikx), k = n/L, 
-#      du_k/dt = (k^2)*(1 - k^2) u_k + (1j*k/2) \sum_i u_i(t) u_{k-i}(t)
-#      du_n/dt = [(n/L)^2]*(1 - (n/L)^2) u_n + (1j*n/2*L) \sum_{j \in Z} u_j(t) u_{n-j}(t)
+To simplify the Fourier transform we use 
+u*u_x = 0.5*(d/dx)(u^2)
 
-# Then first 0 <= n < L Fourier modes are unstable at u_n(t) = 0
+Fourier form of equation with 
+     u(x,t) = \sum_k u_k(t) exp(ikx), k = n/L, 
+     du_k/dt = (k^2)*(1 - k^2) u_k + (1j*k/2) \sum_i u_i(t) u_{k-i}(t)
+     du_n/dt = [(n/L)^2]*(1 - (n/L)^2) u_n + (1j*n/2*L) \sum_{j \in Z} u_j(t) u_{n-j}(t)
+
+Then first 0 <= n < L Fourier modes are unstable at u_n(t) = 0
+
+"""
 
 import numpy as np
 import numpy.fft as npFT

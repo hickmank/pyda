@@ -42,8 +42,8 @@ class ENKF1_inflation(AnalysisGeneratorClass):
         # Calculate ensemble observation mean
         MeasAvg = (1./float(EnSize))*np.tile(Observation.reshape(MeaSize,EnSize).sum(1), (EnSize,1)).transpose()
         
-        # Inflate the ensemble 
-        A = math.sqrt(self.rho)*(A - Amean) + Amean
+        # Inflate only the simulation ensemble, not the parameter ensemble 
+        A[:(SimSize+1),:] = math.sqrt(self.rho)*(A[:(SimSize+1),:] - Amean[:(SimSize+1),:]) + Amean[:(SimSize+1),:]
 
         # Inflate the ensemble observations
         Observation = math.sqrt(self.rho)*(Observation - MeasAvg) + MeasAvg

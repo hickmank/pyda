@@ -33,8 +33,9 @@ class DA_current2horizon(DataAssimilationClass):
     #                 be called to generate the ensemble
     # AnalysisClass = object of type AnalysisGeneratorClass(object) that will 
     #                 be called to form the analysis ensemble
-    def __init__(self,DataFileName,data_noise,Horizon,EnSize,SimDim,EnsembleClass,AnalysisClass):
-        tmpData = np.loadtxt(DataFileName,delimiter='\t')
+    def __init__(self, DataFileName, data_noise, Horizon,EnSize, SimDim,
+                 EnsembleClass, AnalysisClass):
+        tmpData = np.loadtxt(DataFileName, delimiter='\t', skiprows=1)
         self.DataTime = tmpData[:,0]
         self.Data = tmpData[:,1:]
         self.data_noise = data_noise
@@ -55,7 +56,7 @@ class DA_current2horizon(DataAssimilationClass):
 
     # Attribute to write a parameter array to a file. 
     def param_write(self,ParamFileName):
-        np.savetxt(ParamFileName,self.Param,fmt='%5.5f',delimiter='\t')
+        np.savetxt(ParamFileName,self.Param,fmt='%10.10f',delimiter='\t')
 
     # Attribute to write an ensemble array to a file. The ensemble
     # array is reshaped. The ensemble time vector is the left most
@@ -69,7 +70,7 @@ class DA_current2horizon(DataAssimilationClass):
         for i in range(self.EnSize):
             EnsembleWrite[:,(self.SimDim*i+1):(self.SimDim*(i+1)+1)] = Ensemble[:,i].reshape(Ntimestep,self.SimDim) 
 
-        np.savetxt(EnsFileName,EnsembleWrite,fmt='%5.5f',delimiter=' ')
+        np.savetxt(EnsFileName,EnsembleWrite,fmt='%10.10f',delimiter=' ')
 
     # Defines the array of observations corresponding to a generated ensemble.
     # Observation = (measurement size)x(Ensemble Size) numpy array
@@ -129,15 +130,16 @@ class DA_current2horizon(DataAssimilationClass):
             start_time = stop_time
             
             # Define data array used in ensemble analysis
-            # DataArray = (observation size)x(ensemble size) numpy array created by Data[i,:]
-            #        and DataArray            
+            # DataArray = (observation size)x(ensemble size) numpy array created
+            #             by Data[i,:] and DataArray            
             # Handle scalar Data Covariance and Matrix cases differently
             if (self.DataCov.ndim == 0):
                 DataPerturbation = np.sqrt(self.DataCov)*rn.randn(1,self.EnSize)
             elif (self.DataCov.ndim == 2):
                 # Compute SVD of Data Covariance to generate noise
                 U, s, V = np.linalg.svd(self.DataCov, full_matrices=False)
-                DataPerturbation = np.dot(np.dot(U,np.diag(s)),rn.randn(self.Data.shape[1],self.EnSize))
+                DataPerturbation = np.dot(np.dot(U,np.diag(np.sqrt(s))),
+                                          rn.randn(self.Data.shape[1],self.EnSize))
             else:
                 print 'Data Covariance should be matrix or scalar', '\n'
 

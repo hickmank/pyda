@@ -132,15 +132,16 @@ class DA_current(DataAssimilationClass):
             start_time = stop_time
             
             # Define data array used in ensemble analysis
-            # DataArray = (observation size)x(ensemble size) numpy array created by Data[i,:]
-            #        and DataArray            
+            # DataArray = (observation size)x(ensemble size) numpy array created
+            #             by Data[i,:] and DataArray            
             # Handle scalar Data Covariance and Matrix cases differently
             if (self.DataCov.ndim == 0):
                 DataPerturbation = np.sqrt(self.DataCov)*rn.randn(1,self.EnSize)
             elif (self.DataCov.ndim == 2):
                 # Compute SVD of Data Covariance to generate noise
                 U, s, V = np.linalg.svd(self.DataCov, full_matrices=False)
-                DataPerturbation = np.dot(np.dot(U,np.diag(s)),rn.randn(self.Data.shape[1],self.EnSize))
+                DataPerturbation = np.dot(np.dot(U,np.diag(np.sqrt(s))),
+                                          rn.randn(self.Data.shape[1],self.EnSize))
             else:
                 print 'Data Covariance should be matrix or scalar', '\n'
 

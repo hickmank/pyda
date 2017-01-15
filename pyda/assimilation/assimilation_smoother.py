@@ -161,8 +161,8 @@ class DA_smoother(DataAssimilationClass):
             DataArray = np.tile(np.reshape(self.Data[(i-(LagIndex-1)):(i+1),:],(LagIndex*self.ObsDim,1)),(1,self.EnSize))
             
             # Define data array used in ensemble analysis
-            # DataArray = (observation size)x(ensemble size) numpy array created by Data[i,:]
-            #             and DataArray            
+            # DataArray = (observation size)x(ensemble size) numpy array created
+            #             by Data[i,:] and DataArray            
             # Handle scalar Data Covariance and Matrix cases differently
             if (self.DataCov.ndim == 0):
                 # Form data covariance matrix
@@ -173,7 +173,8 @@ class DA_smoother(DataAssimilationClass):
                 # diagonal matrix for covariance of LagIndex block of
                 # data points.
                 U, s, V = np.linalg.svd(np.kron(np.diag(np.ones(LagIndex),0),self.DataCov), full_matrices=False)
-                DataPerturbation = np.dot(np.dot(U,np.diag(s)),rn.randn(LagIndex*self.ObsDim,self.EnSize))
+                DataPerturbation = np.dot(np.dot(U,np.diag(np.sqrt(s))),
+                                          rn.randn(LagIndex*self.ObsDim,self.EnSize))
             else:
                 print 'Data Covariance should be matrix or scalar', '\n'
 
