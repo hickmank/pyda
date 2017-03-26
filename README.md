@@ -29,61 +29,68 @@ Dependencies:
 -------------
 	 - Numpy
 	 - Matplotlib
+	 - Scipy
+	 - h5py
 
 Quick Start:
 ------------
 
 Run
 
-        python setup.py install
+```
+python setup.py install
+```
       
 From the examples directory, try
 
-        python SIR_enkf1.py
+```
+python SIR_enkf1.py
+```
 
 Directory Structure:
+--------------------
 
-pyda1.0/
-	MANIFEST.in
-	LICENSE
-	README
-	setup.py
-	ez_setup.py
-	examples/
-		SIR_enkf1.py
-		:
-		data/
-		    :
-		figures/
-		       :
+	  pyda1.0/
+		MANIFEST.in
+		LICENSE
+		README
+		setup.py
+		ez_setup.py
+		examples/
+			SIR_enkf1.py
+			:
+			data/
+				:
+			figures/
+				:
 
-	pyda/
-		__init__.py
-		analysis_generator/
+		pyda/
 			__init__.py
-			analysis_generator_class.py
-			:
-			kf/
+			analysis_generator/
 				__init__.py
-				enkf1.py
+				analysis_generator_class.py
 				:
-			pf/
+				kf/
+					__init__.py
+					enkf1.py
+					:
+				pf/
+					__init__.py
+					:
+			assimilation/
 				__init__.py
+				assimilation_current.py
+				data_assimilation_class.py
 				:
-		assimilation/
-			__init__.py
-			assimilation_current.py
-			data_assimilation_class.py
-			:
-		ensemble_generator/
-			__init__.py
-			ensemble_generator_class.py
-			SIRensemble.py
-			:
-		utilities/
-			__init__.py
-			epiODElib.py
-			:
+			ensemble_generator/
+				__init__.py
+				ensemble_generator_class.py
+				SIRensemble.py
+				:
+			utilities/
+				__init__.py
+				epiODElib.py
+				:
 		
 Description:
 ------------

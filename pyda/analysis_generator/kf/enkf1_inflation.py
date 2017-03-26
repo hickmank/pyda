@@ -80,5 +80,5 @@ class ENKF1_inflation(AnalysisGeneratorClass):
         AnalysisParam = Analysis[SimSize:,:].transpose()
         Analysis = Analysis[0:SimSize,:]
                 
-        return [Analysis,AnalysisParam]
+        return [Analysis, AnalysisParam]
 

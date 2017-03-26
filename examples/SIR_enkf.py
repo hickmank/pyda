@@ -42,7 +42,8 @@ if __name__ == '__main__':
     DataFileName = './data/SIRdata.dat'
     
     # Specify data assimilation method
-    DA_method = SIR_DA(DataFileName,data_noise,Horizon,EnSize,SimDim,ensemble_method,analysis_method)
+    DA_method = SIR_DA(DataFileName, data_noise, Horizon, EnSize, SimDim,
+                       ensemble_method,analysis_method)
 
     # Read/Write initialization/parametrization file to correct place.
     DA_method.param_read('./data/SIRsampleparams.dat')
@@ -54,4 +55,4 @@ if __name__ == '__main__':
     Horizon_timesteps = 20.0
 
     # Run data assimilation routine
-    DA_method.DArun(Ntimestep,InitialTime,Horizon_timesteps)
+    DA_method.DArun(Ntimestep, InitialTime, Horizon_timesteps)
