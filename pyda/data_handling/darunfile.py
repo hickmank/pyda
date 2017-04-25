@@ -18,7 +18,7 @@ through reference to that elements place in the data assimilation experiment.
 - One file == one DA run
 
 - Data stored as (obs. time, observation) pair even though each observation may
-  be high dimension
+  be high dimensional
 
 - Data `name` header stored, i.e. "sat1", "sat2", each name corresponds to one
   `(obs. time, observation)` pair
@@ -45,9 +45,9 @@ through reference to that elements place in the data assimilation experiment.
 
 - `obs. time` is a subset of `sim. time`
 
-- Observation error covariance must be stored
+- Observation error covariance must be stored (assumed constant in time)
 
-- Inflation coefficients must be stored
+- Inflation coefficients must be stored 
 
 - Choose not to deal with localization except perhaps through the observation operator
 
@@ -56,7 +56,7 @@ through reference to that elements place in the data assimilation experiment.
 import numpy
 import h5py
 
-class darunfile(object):
+class DaRunFile(object):
     """Class to create, manage, and store a data assimilation run.
 
     This class contains the intialization of a `darunfile`. Methods in this
@@ -73,7 +73,7 @@ class darunfile(object):
 
     """
     
-    def __init__(self, filename, damethod, date, ensize, state_dim, par_dim=0):
+    def __init__(self, filename, damethod, date, ensize):
         """Initialize darun attributes
 
         Args:
@@ -81,16 +81,52 @@ class darunfile(object):
             damethod (str): Name of the assimilation method used, i.e. `enkf`.
             date (str): Date of the experiment `MM-DD-YYYY:HHHH`
             ensize (int): ensemble size
-            state_dim (int): dimension of the state variable
-            par_dim (int): dimension of parameters adjusted during assimilation
 
         """
+        
         self.filename = filename
         self.damethod = damethod
         self.date = date
         self.ensize = ensize
-        self.state_dim = state_dim
-        self.par_dim = par_dim
 
-    def create_file(self)
-        self.darunfile = h5py.File(self.filename, "w")
+        # Create the file
+        self.dafile = h5py.File(self.filename, "a")
+
+        # Set the meta-data as attributes on the root group
+        self.dafile.attrs['damethod'] = self.damethod
+        self.dafile.attrs['date'] = self.date
+        self.dafile.attrs['ensize'] = self.ensize
+
+        # Create main groups for the darunfile
+        self.dafile.create_group("Observation")
+        self.dafile.create_group("Parameter")
+        self.dafile.create_group("State")
+        self.dafile.create_group("StateObservation")
+        self.dafile.create_group("Simulation")
+        self.dafile.create_group("Inflation")
+        
+    def add_obs(self, ObsName, ObsDim):
+        # Add an observation entry
+        # Covariance will be stored along with observation
+        ObsGrp = self.dafile['/Observation']
+
+    def add_par(self, ParName, ParDim):
+        # Add a parameter entry
+        ParGrp = self.dafile['/Parameter'] 
+
+    def add_state(self, StateName, StateDim):
+        # Add a model state
+        StateGrp = self.dafile['/State']
+
+    def add_stateobs(self, StateName, ObsName, ObsDim):
+        # Add a series of state observations
+        StateObsGrp = self.dafile['/StateObservation']
+
+    def add_sim(self, SimName, SimDim):
+        # Add simulation state. Differs from State since timesteps
+        # will be finer than observations
+        SimGrp = self.dafile['/Simulation']
+        
+    def add_inflation(self, InflationName):
+        # Add inflation parameters and name of inflation method
+        InflationGrp = self.dafile['/Inflation']
